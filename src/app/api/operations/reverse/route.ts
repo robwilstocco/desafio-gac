@@ -54,9 +54,9 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      user.balance += operation.value;
+      user.balance += (operation.value * -1);
+      receiver.balance -= (operation.value * -1);
 
-      receiver.balance -= operation.value;
       receiver.operations = receiver.operations.map((op) => {
         return op.id === reversionId
           ? { ...op, operationType: 'Revertida', reverted: true }
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       await updateUser(receiver);
     } // TRANSFERENCIA RECEBIDA
     else if (
-      operation.operationType === 'Transferência enviada' &&
+      operation.operationType === 'Transferência recebida' &&
       operation.receivedFrom
     ) {
       const sender = await getUserByAccountNumber(operation.receivedFrom);
@@ -78,8 +78,8 @@ export async function POST(req: NextRequest) {
       }
 
       user.balance -= operation.value;
-
       sender.balance += operation.value;
+
       sender.operations = sender.operations.map((op) => {
         return op.id === reversionId
           ? { ...op, operationType: 'Revertida', reverted: true }

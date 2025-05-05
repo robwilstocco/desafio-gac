@@ -15,7 +15,6 @@ export default function DashboardClient({ user }: ISession) {
 
   useEffect(() => {
     async function getUser() {
-      console.log(user)
       try {
         const res = await axios.get(`http://localhost:3001/users?email=${user?.email}`);
         setUserData(res.data[0]);
